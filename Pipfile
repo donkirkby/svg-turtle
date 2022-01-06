@@ -11,6 +11,3 @@ cairosvg = "*"
 pytest = "*"
 space-tracer = "*"
 coverage = "*"
-
-[requires]
-python_version = "3.9"
