@@ -6,4 +6,4 @@ __version__ = '0.1.0'
 __author__ = "Don Kirkby"
 __author_email__ = "donkirkby@gmail.com"
 __description__ = "Use the Python turtle to write SVG files."
-__url__ = "https://github.com/donkirkby/svg-turtle"
+__url__ = "https://donkirkby.github.io/svg-turtle"

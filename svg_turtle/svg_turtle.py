@@ -60,8 +60,10 @@ class SvgTurtle(TNavigator, TPen):
         TPen.__init__(self)
         self.screen = self._Screen(drawing, width, height)
         self.stamps = []
-        self.__xoff = self.window_width()/2
-        self.__yoff = -self.window_height()/2
+
+        # Offsetting by half a pixel draws lines through the middle of pixels.
+        self.__xoff = self.window_width()/2 + 0.5
+        self.__yoff = -self.window_height()/2 - 0.5
         self.color('black', 'black')
 
     def _convert_position(self, position):

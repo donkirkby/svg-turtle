@@ -1,0 +1,13 @@
+remote_theme: chrisrhymes/bulma-clean-theme
+title: SaVaGe Turtle
+google_analytics: UA-4644630-2
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      hero_image: images/savage_turtle.jpg
+      hero_darken: true
+      twitter:
+        card: summary_large_image
+      image: images/savage_turtle.jpg

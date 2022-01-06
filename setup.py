@@ -35,4 +35,5 @@ setuptools.setup(
         "Development Status :: 2 - Pre-Alpha",
     ],
     project_urls={
-        'Bug Reports': 'https://github.com/donkirkby/svg-turtle/issues'})
+        'Bug Reports': 'https://github.com/donkirkby/svg-turtle/issues',
+        'Source': 'https://github.com/donkirkby/svg-turtle'})
