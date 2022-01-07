@@ -32,7 +32,7 @@ setuptools.setup(
         "Programming Language :: Python :: 3.10",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 4 - Beta",
     ],
     project_urls={
         'Bug Reports': 'https://github.com/donkirkby/svg-turtle/issues',
