@@ -33,7 +33,8 @@ jobs:
       - name: Test with pytest
         run: |
           pipenv run coverage run --source svg_turtle -m pytest
+          ls -a
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v2
         with:
           env_vars: PYTHON

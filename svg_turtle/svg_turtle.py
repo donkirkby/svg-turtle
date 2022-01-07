@@ -1,269 +1,155 @@
-from collections import namedtuple
-import re
-from turtle import TNavigator, TPen
+import sys
+import types
 
-import svgwrite
+from .canvas import Canvas
 
-ANCHOR_NAMES = dict(left='start',
-                    center='middle',
-                    right='end')
+try:
+    import tkinter as tk
+except ImportError:
+    tkinter_name = 'tkinter'
+    tk = sys.modules[tkinter_name] = types.ModuleType(tkinter_name)
+
+    tk.Frame = tk.Canvas = tk.Tk = tk.ROUND = object
+    tk.mainloop = lambda *args, **kwargs: None
+
+    dialog_name = tkinter_name + '.simpledialog'
+    tk.simpledialog = sys.modules[dialog_name] = types.ModuleType(dialog_name)
+
+from turtle import RawTurtle, TurtleScreen
+
+DEFAULT_FONT = ("Arial", 8, "normal")
 
 
-# noinspection PyUnresolvedReferences,DuplicatedCode
-class SvgTurtle(TNavigator, TPen):
-    """ Helper class to include turtle graphics within a PDF document. """
+# noinspection DuplicatedCode
+# noinspection PyProtectedMember
+# noinspection PyUnresolvedReferences
+class SvgTurtle(RawTurtle):
+    class _Screen(TurtleScreen):
+        def __init__(self, canvas):
+            super().__init__(canvas)
+            self._config = {'bgcolor': None}
 
-    class _Screen(object):
-        def __init__(self, drawing, width, height):
-            self.cv = drawing
-            self._window_width = width
-            self._window_height = height
+        def _blankimage(self):
+            pass
 
-        def window_width(self):
-            return self._window_width
+        @staticmethod
+        def _rgb_value(rgbstr):
+            return round(int(rgbstr, 16)/2.55)/100.0
 
-        def window_height(self):
-            return self._window_height
+        # noinspection DuplicatedCode
+        def _color(self, colorstr):
+            """ Reverse lookup of _colorstr. """
+            if not colorstr.startswith('#'):
+                return colorstr
+            if colorstr == '#ffffff':
+                return 'white'
+            itercolors = getattr(color_map, 'iteritems', color_map.items)
+            for name, code in itercolors():
+                if code == colorstr:
+                    return name
+            return tuple(self._rgb_value(colorstr[2*i+1:2*i+3]) for i in range(3))
 
-    _Stamp = namedtuple('Stamp', 'pos heading color')
+        # noinspection PyMethodMayBeStatic,DuplicatedCode
+        def _colorstr(self, color):
+            """Return color string corresponding to args.
 
-    @classmethod
-    def create(cls, width="400px", height="250px", bgcolor=None) -> "SvgTurtle":
-        svg_drawing = cls.create_svg(width, height)
-        turtle = cls(svg_drawing)
-        if bgcolor is not None:
-            bgcolor_str = turtle._colorstr(bgcolor)
-            svg_drawing.add(svg_drawing.rect(fill=bgcolor_str,
-                                             size=('100%', '100%')))
-        return turtle
+            Argument may be a string or a tuple of three
+            numbers corresponding to actual colormode,
+            i.e. in the range 0<=n<=colormode.
 
-    @classmethod
-    def create_svg(cls, width, height):
-        if not isinstance(width, str):
-            width = f'{width}px'
-        if not isinstance(height, str):
-            height = f'{height}px'
-        svg_drawing = svgwrite.Drawing(size=(width, height))
-        return svg_drawing
+            If the argument doesn't represent a color,
+            just uses black.
+            """
+            if len(color) == 1:
+                color = color[0]
+            if color == 'black':
+                return color
+            if isinstance(color, str):
+                return color_map.get(color.lower(), color)
+            try:
+                r, g, b = color
+            except ValueError:
+                return '#000000'
+            r, g, b = [round(255.0*x) for x in (r, g, b)]
+            if not ((0 <= r <= 255) and (0 <= g <= 255) and (0 <= b <= 255)):
+                return '#000000'
+            return "#%02x%02x%02x" % (r, g, b)
 
-    def __init__(self, drawing, width=None, height=None):
-        if width is None:
-            width = _parse_int(drawing['width'])
-        if height is None:
-            height = _parse_int(drawing['height'])
-        clip_path = drawing.defs.add(drawing.clipPath(id='border_clip'))
-        clip_path.add(drawing.rect(size=(width, height)))
-        self._path = None
-        self._lines_to_draw = []
-        self.screen = None
-        TNavigator.__init__(self)
-        TPen.__init__(self)
-        self.screen = self._Screen(drawing, width, height)
-        self.stamps = []
+        def title(self, title):
+            pass
 
-        # Offsetting by half a pixel draws lines through the middle of pixels.
-        self.__xoff = self.window_width()/2 + 0.5
-        self.__yoff = -self.window_height()/2 - 0.5
-        self.color('black', 'black')
+        def setup(self, width=None, height=None, startx=None, starty=None):
+            pass
 
-    def _convert_position(self, position):
-        return (round(position[0] + self.__xoff, 3),
-                round(-position[1] - self.__yoff, 3))
+        def textinput(self, title, prompt):
+            pass
 
-    def _goto(self, end):
-        if self.screen:
-            x1, y1 = self._convert_position(self._position)
-            x2, y2 = self._convert_position(end)
-            if self._drawing:
-                pencolor = self._pencolor or 0
-                pensize = self._pensize or 0
-                if self._path:
-                    self._lines_to_draw.append((x1,
-                                                y1,
-                                                x2,
-                                                y2,
-                                                pencolor,
-                                                pensize))
-                else:
-                    self._draw_line(x1, y1, x2, y2, pencolor, pensize)
-            if self._path:
-                self._path.append((x2, y2))
-        self._position = end
+        def numinput(self, title, prompt, default=None, minval=None, maxval=None):
+            pass
 
-    def _draw_line(self, x1, y1, x2, y2, pencolor, pensize):
-        self.screen.cv.add(self.screen.cv.line((x1, y1),
-                                               (x2, y2),
-                                               stroke=pencolor,
-                                               stroke_width=pensize,
-                                               stroke_linecap='round',
-                                               clip_path='url(#border_clip)'))
+        def mainloop(self):
+            pass
 
-    def dot(self, size=None, *color):
-        x, y = self._convert_position(self._position)
-        if size is not None:
-            diameter = size
-        else:
-            pensize = self._pensize or 0
-            diameter = max(pensize+4, 2*pensize)
-        if len(color):
-            pencolor = self._colorstr(color)
-        else:
-            pencolor = self._pencolor or 0
-        self.screen.cv.add(self.screen.cv.circle((x, y),
-                                                 diameter/2,
-                                                 stroke=pencolor,
-                                                 fill=pencolor,
-                                                 clip_path='url(#border_clip)'))
+        def done(self):
+            pass
 
-    def to_svg(self) -> str:
-        self._path = None  # Cancel incomplete fill.
-        self._newLine()
-        self._flush_lines()
-        self._draw_stamps()
+        def bye(self):
+            pass
 
-        return self.screen.cv.tostring()
+        def exitonclick(self):
+            pass
 
-    def save_as(self, filename, pretty=False, indent=2):
-        self.screen.cv.saveas(filename, pretty, indent)
+    def __init__(self, width=400, height=250, screen=None):
+        if screen is None:
+            canvas = Canvas(width, height)
+            screen = self._Screen(canvas)
+            screen.cv.config(bg='')
+        super().__init__(screen)
+        super().speed(0)
 
-    def _draw_stamps(self):
-        start_pos = self.pos()
-        start_heading = self.heading()
-        start_pensize = self.pensize()
-        start_isdown = self.isdown()
-        self.pensize(1)
-        stamps = self.stamps[:]
-        self.stamps.clear()
-        for stamp in stamps:
-            self.up()
-            self.goto(stamp.pos)
-            self.setheading(stamp.heading)
-            self.color(*stamp.color)
-            self.down()
-            self.begin_fill()
-            self.left(151)
-            self.fd(10.296)
-            self.left(140.8)
-            self.fd(5.385)
-            self.right(43.6)
-            self.fd(5.385)
-            self.setpos(stamp.pos)
-            self.end_fill()
-        self.up()
-        self.goto(start_pos)
-        self.setheading(start_heading)
-        self.pensize(start_pensize)
-        if start_isdown:
-            self.down()
-
-    def begin_fill(self):
-        self.fill(True)
-
-    def end_fill(self):
-        self.fill(False)
-
-    def _flush_lines(self):
-        if self._lines_to_draw:
-            for x1, y1, x2, y2, pencolor, pensize in self._lines_to_draw:
-                if pencolor is not None:
-                    self._draw_line(x1, y1, x2, y2, pencolor, pensize)
-        self._lines_to_draw = []
-        self._draw_stamps()
-
-    def fill(self, flag=None):
-        if flag is None:
-            return self._path is not None
-        if self._path and len(self._path) > 2:
-            self.screen.cv.add(self.screen.cv.polygon(points=self._path,
-                                                      fill=self._fillcolor,
-                                                      fill_rule='evenodd',
-                                                      clip_path='url(#border_clip)'))
-        self._path = None  # Clear to avoid interfering with stamps.
-        self._flush_lines()
-        if flag:
-            x, y = self._position
-            self._path = [(x + self.__xoff, -y - self.__yoff)]
-
-    def window_width(self):
-        return self.screen.window_width()
-
-    def window_height(self):
-        return self.screen.window_height()
-
-    def stamp(self):
-        self.stamps.append(
-            self._Stamp(self.pos(), self.heading(), self.color()))
-        if not self.fill():
-            self._draw_stamps()
+    def pen(self, pen=None, **pendict):
+        pendict['speed'] = 0
+        return super().pen(pen, **pendict)
 
     def write(self,
               arg,
               move=False,
               align="left",
-              font=("Helvetica", 8, "normal")):
+              font=DEFAULT_FONT):
         if move:
-            raise ValueError('move', 'Parameter is not supported.')
-        font_name, font_size, font_style = font
-        font_size *= 1.65
-        style = 'font-family: {}; font-size: {}; font-style: {};'.format(
-            font_name,
-            font_size,
-            font_style)
+            raise NotImplementedError('move parameter is not supported.')
 
-        x, y = self._convert_position(self._position)
-        y -= font[1] * 0.45
-        self.screen.cv.add(self.screen.cv.text(arg,
-                                               insert=(x, y),
-                                               text_anchor=ANCHOR_NAMES[align],
-                                               style=style,
-                                               fill=self._pencolor,
-                                               clip_path='url(#border_clip)'))
-
-    # noinspection PyMethodMayBeStatic
-    def _colorstr(self, color):
-        """Return color string corresponding to args.
-
-        Argument may be a string or a tuple of three
-        numbers corresponding to actual colormode,
-        i.e. in the range 0<=n<=colormode.
-
-        If the argument doesn't represent a color,
-        just uses black.
-        """
-        if len(color) == 1:
-            color = color[0]
-        if isinstance(color, str):
-            return color_map.get(color.lower(), color)
+        # noinspection PyBroadException
         try:
-            r, g, b = color
-        except ValueError:
-            return '#000000'
-        r, g, b = [round(255.0*x) for x in (r, g, b)]
-        if not ((0 <= r <= 255) and (0 <= g <= 255) and (0 <= b <= 255)):
-            return '#000000'
-        return "#%02x%02x%02x" % (r, g, b)
+            if isinstance(font, str):
+                font = [font]
+            else:
+                font = list(font)
+            font += DEFAULT_FONT[len(font):]
+        except Exception:
+            font = list(DEFAULT_FONT)
+        font[1] = int(font[1])
+        font = tuple(font)
 
-    @staticmethod
-    def _rgb_value(rgbstr):
-        return round(int(rgbstr, 16)/2.55)/100.0
+        super().write(arg, move, align, font)
 
-    def _color(self, colorstr):
-        """ Reverse lookup of _colorstr. """
-        if not colorstr.startswith('#'):
-            return colorstr
-        itercolors = getattr(color_map, 'iteritems', color_map.items)
-        for name, code in itercolors():
-            if code == colorstr:
-                return name
-        return tuple(self._rgb_value(colorstr[2*i+1:2*i+3]) for i in range(3))
+    def _update(self, *args, **kwargs):
+        if not self._pencolor.startswith('#') and self._pencolor != 'black':
+            self._pencolor = self._colorstr(self._pencolor)
+        if not self._fillcolor.startswith('#') and self._fillcolor != 'black':
+            self._fillcolor = self._colorstr(self._fillcolor)
+        return super()._update(*args, **kwargs)
 
+    def _drawturtle(self):
+        pass
 
-def _parse_int(s):
-    """ Parse an integer from the start of a string, ignore anything else. """
-    match = re.match(r'\d+', s)
-    if match is None:
-        raise ValueError('String does not start with digits: {!r}'.format(s))
-    return int(match.group(0))
+    def to_svg(self):
+        canvas: Canvas = self.getscreen().cv
+        return canvas.to_drawing().tostring()
+
+    def save_as(self, filename, pretty=False, indent=2):
+        canvas: Canvas = self.getscreen().cv
+        return canvas.to_drawing().saveas(filename, pretty, indent)
 
 
 # Normally, Tkinter will look up these colour names for you, but we don't
