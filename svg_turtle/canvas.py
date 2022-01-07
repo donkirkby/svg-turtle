@@ -80,11 +80,10 @@ class Canvas(object):
             coords[i+1] = y
         attribs = item_details.attribs
         if item_details.method_name == 'create_line':
-            pass
             drawing.add(drawing.polyline(build_coordinate_pairs(coords),
                                          stroke=attribs['fill'],
                                          stroke_width=attribs['width'],
-                                         stroke_linecap=attribs['capstyle'],
+                                         stroke_linecap='round',
                                          fill='none',
                                          clip_path='url(#border_clip)'))
         elif item_details.method_name == 'create_polygon':
