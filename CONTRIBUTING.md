@@ -22,7 +22,7 @@ are:
    in `setup.py`.
 2. Activate the project's Python virtual environment.
 
-        pipenv shell
+        . .tox/py39/bin/activate
 
 3. Temporarily install the build tools using pip, not pipenv.
 
@@ -45,10 +45,10 @@ are:
    extra packages.
 
         rm dist/*
-        exit
-        pipenv clean
+        deactivate
+        tox -re py39
 
-8. Commit the version number changes, push, and create a release on GitHub.
+9. Commit the version number changes, push, and create a release on GitHub.
 
 [packaging.python.org]: https://packaging.python.org/tutorials/packaging-projects/
 [package page]: https://pypi.org/project/svg_turtle/

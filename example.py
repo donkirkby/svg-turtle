@@ -14,7 +14,7 @@ def draw_spiral(t):
 
 
 def write_file(filename):
-    t = SvgTurtle.create(500, 500)
+    t = SvgTurtle(500, 500)
     draw_spiral(t)
     t.save_as(filename)
 
