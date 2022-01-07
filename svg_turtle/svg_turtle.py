@@ -15,14 +15,11 @@ except ImportError:
     dialog_name = tkinter_name + '.simpledialog'
     tk.simpledialog = sys.modules[dialog_name] = types.ModuleType(dialog_name)
 
-from turtle import RawTurtle, TurtleScreen
+from turtle import RawTurtle, TurtleScreen, Turtle
 
 DEFAULT_FONT = ("Arial", 8, "normal")
 
 
-# noinspection DuplicatedCode
-# noinspection PyProtectedMember
-# noinspection PyUnresolvedReferences
 class SvgTurtle(RawTurtle):
     class _Screen(TurtleScreen):
         def __init__(self, canvas):
@@ -31,6 +28,12 @@ class SvgTurtle(RawTurtle):
 
         def _blankimage(self):
             pass
+
+        def clear(self):
+            # This breaks the monkey patch if you don't put the pen back.
+            pen = Turtle._pen
+            super().clear()
+            Turtle._pen = pen
 
         @staticmethod
         def _rgb_value(rgbstr):
@@ -133,11 +136,13 @@ class SvgTurtle(RawTurtle):
 
         super().write(arg, move, align, font)
 
+    # noinspection PyUnresolvedReferences
     def _update(self, *args, **kwargs):
         if not self._pencolor.startswith('#') and self._pencolor != 'black':
             self._pencolor = self._colorstr(self._pencolor)
         if not self._fillcolor.startswith('#') and self._fillcolor != 'black':
             self._fillcolor = self._colorstr(self._fillcolor)
+        # noinspection PyProtectedMember
         return super()._update(*args, **kwargs)
 
     def _drawturtle(self):
