@@ -9,12 +9,15 @@
 [pypi]: https://pypi.org/project/svg-turtle/
 
 If you're using the Python turtle module to teach students, or you just like
-using the turtle module yourself, this module can save the images from a turtle
+using the turtle module yourself, this library can save the images from a turtle
 script as SVG files. Experiment with your turtle code using the regular turtle
 or the [Live Coding in Python] plugin for PyCharm, then pass an `SvgTurtle` to
-the same code, and save it as an SVG file.
+the same code, and save it as an SVG file. If you want to produce other file
+formats, use [svglib] to convert the SVG to PDF, PNG, GIF, JPG, TIFF, and PCT,
+among others.
 
 [Live Coding in Python]: https://donkirkby.github.io/live-py-plugin/
+[svglib]: https://pypi.org/project/svglib/#examples
 
 ## Installing
 Install it with `pip install svg_turtle`. If you haven't installed Python
