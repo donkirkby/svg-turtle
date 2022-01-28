@@ -117,6 +117,24 @@ def test_dot(image_differ):
     image_differ.assert_equal(svg, expected_svg)
 
 
+def test_colormode(image_differ):
+    expected = Drawing(size=(300, 200))
+    expected.add(expected.line((150.5, 100.5),
+                               (150.5, 100.5),
+                               stroke_width=20,
+                               stroke_linecap='round',
+                               stroke='#007FFF'))
+    expected_svg = LiveSvg(expected.tostring())
+
+    t = SvgTurtle(300, 200)
+    t.getscreen().colormode(255)
+    t.dot(20, (0, 127, 255))
+
+    svg = LiveSvg(t.to_svg())
+
+    image_differ.assert_equal(svg, expected_svg)
+
+
 def test_save_as(tmp_path):
     expected = SvgTurtle(300, 200)
     expected.forward(100)

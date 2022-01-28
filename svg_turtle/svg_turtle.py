@@ -73,7 +73,9 @@ class SvgTurtle(RawTurtle):
                 r, g, b = color
             except ValueError:
                 return '#000000'
-            r, g, b = [round(255.0*x) for x in (r, g, b)]
+            # noinspection PyUnresolvedReferences
+            colormode = self._colormode
+            r, g, b = [round(255.0*x/colormode) for x in (r, g, b)]
             if not ((0 <= r <= 255) and (0 <= g <= 255) and (0 <= b <= 255)):
                 return '#000000'
             return "#%02x%02x%02x" % (r, g, b)
