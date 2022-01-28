@@ -24,7 +24,7 @@ are:
 
         . .tox/py39/bin/activate
 
-3. Temporarily install the build tools using pip, not pipenv.
+3. Temporarily install the build tools using pip.
 
         python -m pip install --upgrade setuptools wheel twine
 
