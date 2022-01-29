@@ -1,3 +1,4 @@
+import re
 import sys
 import types
 
@@ -15,7 +16,7 @@ except ImportError:
     dialog_name = tkinter_name + '.simpledialog'
     tk.simpledialog = sys.modules[dialog_name] = types.ModuleType(dialog_name)
 
-from turtle import RawTurtle, TurtleScreen, Turtle
+from turtle import RawTurtle, TurtleScreen, Turtle, TurtleGraphicsError
 
 DEFAULT_FONT = ("Arial", 8, "normal")
 
@@ -68,16 +69,23 @@ class SvgTurtle(RawTurtle):
             if color == 'black':
                 return color
             if isinstance(color, str):
-                return color_map.get(color.lower(), color)
+                if re.match(r'^#[0-9A-Fa-f]{6}$', color):
+                    return color.lower()
+                rgb = color_map.get(color.lower())
+                if rgb is None:
+                    raise TurtleGraphicsError('bad color string: {}'.format(
+                        color))
+                return rgb
             try:
                 r, g, b = color
-            except ValueError:
-                return '#000000'
+            except (TypeError, ValueError):
+                raise TurtleGraphicsError("bad color arguments: %s" % str(color))
             # noinspection PyUnresolvedReferences
             colormode = self._colormode
             r, g, b = [round(255.0*x/colormode) for x in (r, g, b)]
             if not ((0 <= r <= 255) and (0 <= g <= 255) and (0 <= b <= 255)):
-                return '#000000'
+                raise TurtleGraphicsError('bad color sequence: {!r}'.format(
+                    color))
             return "#%02x%02x%02x" % (r, g, b)
 
         def title(self, title):
@@ -113,8 +121,16 @@ class SvgTurtle(RawTurtle):
         super().speed(0)
 
     def pen(self, pen=None, **pendict):
-        pendict['speed'] = 0
-        return super().pen(pen, **pendict)
+        if not (pen or pendict):
+            return super().pen()
+
+        if isinstance(pen, dict):
+            p = dict(pen)
+        else:
+            p = {}
+        p.update(pendict)
+        p['speed'] = 0
+        return super().pen(p)
 
     def write(self,
               arg,

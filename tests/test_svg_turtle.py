@@ -1,3 +1,5 @@
+import re
+from turtle import TurtleGraphicsError
 from pathlib import Path
 
 import pytest
@@ -236,7 +238,8 @@ def test_listen():
     [((0.1, 0.2, 0.3), (0.1, 0.2, 0.3)),
      ('gray100', 'white'),
      ('black', 'black'),
-     ('pink', 'pink')])
+     ('pink', 'pink'),
+     ('#00Ff00', 'green1')])
 def test_get_colour(colour_in, colour_out):
     t = SvgTurtle()
     t.pencolor(colour_in)
@@ -244,6 +247,39 @@ def test_get_colour(colour_in, colour_out):
     c = t.pencolor()
 
     assert c == colour_out
+
+
+@pytest.mark.parametrize(
+    'colour_in,expected_error',
+    [((1.0, 0.0), 'bad color arguments: (1.0, 0.0)'),  # only two numbers
+     ((1.0, 0.0, 1.5), 'bad color sequence: (1.0, 0.0, 1.5)'),  # over 1.0
+     ('brightyellow', 'bad color string: brightyellow'),
+     ('#1234567', 'bad color string: #1234567')])
+def test_bad_colour(colour_in, expected_error):
+    t = SvgTurtle()
+    with pytest.raises(TurtleGraphicsError,
+                       match=re.escape(expected_error)):
+        t.color(colour_in)
+
+
+def test_pen_dict(image_differ):
+    expected = Drawing(size=(300, 200))
+    expected.add(expected.line((150.5, 100.5),
+                               (250.5, 100.5),
+                               stroke_width=1,
+                               stroke_linecap='round',
+                               stroke='#0000FF'))
+    expected_svg = LiveSvg(expected.tostring())
+
+    t = SvgTurtle(300, 200)
+    t.pen(pencolor=(0, 0, 1.0))
+    pen = t.pen()
+    t.fd(100)
+
+    svg = LiveSvg(t.to_svg())
+
+    image_differ.assert_equal(svg, expected_svg)
+    assert pen['pencolor'] == '#0000ff'
 
 
 # noinspection PyUnresolvedReferences
