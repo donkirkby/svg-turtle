@@ -9,6 +9,11 @@ ANCHOR_NAMES = dict(sw='start',
                     se='end')
 
 
+class DummyWindow:
+    def call(self, *args, **kwargs):
+        pass
+
+
 class Canvas(object):
     def __init__(self, width=400, height=250):
         self.options = {'width': width,
@@ -141,6 +146,10 @@ class Canvas(object):
         else:
             item_details = self.items[item]
             item_details.is_deleted = True
+
+    @staticmethod
+    def winfo_toplevel():
+        return DummyWindow()
 
     def update(self):
         pass

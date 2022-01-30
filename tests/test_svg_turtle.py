@@ -1,5 +1,4 @@
 import re
-from turtle import TurtleGraphicsError
 from pathlib import Path
 
 import pytest
@@ -7,7 +6,8 @@ from cairosvg import svg2png
 from space_tracer import LiveImage, LiveImageDiffer, LivePainter
 from svgwrite import Drawing
 
-from svg_turtle import SvgTurtle
+# Importing TurtleGraphicsError directly from turtle will fail without tkinter.
+from svg_turtle import SvgTurtle, TurtleGraphicsError
 
 
 class LiveSvg(LiveImage):
