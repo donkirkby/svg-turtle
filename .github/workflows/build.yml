@@ -32,6 +32,9 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip tox
+      - name: Install cairo on MacOS
+        run: brew install cairo
+        if: ${{ matrix.platform == 'macos-latest' }}
       - name: Test with pytest
         run: |
           python -m tox -e py
