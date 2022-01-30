@@ -1,10 +1,12 @@
 import re
+from io import StringIO
 from pathlib import Path
 
 import pytest
-from cairosvg import svg2png
 from space_tracer import LiveImage, LiveImageDiffer, LivePainter
 from svgwrite import Drawing
+from svglib.svglib import svg2rlg
+from reportlab.graphics import renderPM
 
 # Importing TurtleGraphicsError directly from turtle will fail without tkinter.
 from svg_turtle import SvgTurtle, TurtleGraphicsError
@@ -15,8 +17,8 @@ class LiveSvg(LiveImage):
         self.svg = svg
 
     def convert_to_png(self) -> bytes:
-        original_png = svg2png(self.svg)
-        return original_png
+        rlg = svg2rlg(StringIO(self.svg))
+        return renderPM.drawToString(rlg, fmt="PNG")
 
     # This override can be removed after bug is fixed:
     # https://github.com/donkirkby/live-py-plugin/issues/360
@@ -182,6 +184,23 @@ def test_write(image_differ):
 
     t = SvgTurtle(300, 200)
     t.write('Hello, World!')
+
+    svg = LiveSvg(t.to_svg())
+
+    image_differ.assert_equal(svg, expected_svg)
+
+
+def test_write_font(image_differ):
+    expected = Drawing(size=(300, 200))
+    expected.add(expected.text('Hello, World!',
+                               insert=(149.5, 96.9),
+                               text_anchor='start',
+                               style='font-family: Monospace; font-size: 13.2;'))
+    expected_svg = LiveSvg(expected.tostring())
+
+    t = SvgTurtle(300, 200)
+    # noinspection PyTypeChecker
+    t.write('Hello, World!', font='Monospace')
 
     svg = LiveSvg(t.to_svg())
 
