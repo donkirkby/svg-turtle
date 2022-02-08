@@ -1,4 +1,4 @@
-# SaVaGe Turtle [![Build Badge]][build] [![Coverage Badge]][codecov] [![PyPI Badge]][pypi]
+# SaVaGe Turtle [![Build Badge]][build] [![Coverage Badge]][codecov] [![Downloads Badge]][downloads] [![PyPI Badge]][pypi]
 ### Use the Python turtle to write SVG files
 
 [Build Badge]: https://github.com/donkirkby/svg-turtle/actions/workflows/build.yml/badge.svg?branch=main
@@ -7,6 +7,8 @@
 [codecov]: https://codecov.io/github/donkirkby/svg-turtle?branch=main
 [PyPI Badge]: https://badge.fury.io/py/svg-turtle.svg
 [pypi]: https://pypi.org/project/svg-turtle/
+[Downloads Badge]: https://static.pepy.tech/badge/svg-turtle/month
+[downloads]: https://pepy.tech/project/svg-turtle
 
 If you're using the Python turtle module to teach students, or you just like
 using the turtle module yourself, this library can save the images from a turtle
