@@ -74,9 +74,13 @@ class Canvas(object):
             return
         if item_details.attribs.get('image') == '':
             return
-        xoff = self.winfo_width() / 2 + 0.5
-        yoff = self.winfo_height() / 2 + 0.5
+        sx1, sy1, sx2, sy2 = self.options.get(
+            'scrollregion',
+            (0, -self.winfo_height(), self.winfo_width(), 0))
+        xoff = 0.5 - sx1
+        yoff = 0.5 - sy1
         coords = list(item_details.coords)
+        # noinspection DuplicatedCode
         for i in range(0, len(coords), 2):
             x, y = coords[i:i+2]
             x = x + xoff
@@ -129,6 +133,9 @@ class Canvas(object):
 
     def config(self, **kwargs):
         self.options.update(kwargs)
+
+    def find_all(self):
+        return range(len(self.items))
 
     def coords(self, item, *coords):
         item_details = self.items[item]

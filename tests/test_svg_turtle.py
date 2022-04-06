@@ -139,6 +139,23 @@ def test_colormode(image_differ):
     image_differ.assert_equal(svg, expected_svg)
 
 
+def test_setworldcoordinates(image_differ):
+    expected = SvgTurtle(300, 200)
+    expected.pensize(3)
+    expected.up()
+    expected.goto(-150, 100)
+    expected.down()
+    expected.forward(50)
+    expected_svg = LiveSvg(expected.to_svg())
+
+    t = SvgTurtle(300, 200)
+    t.getscreen().setworldcoordinates(0, -200, 300, 0)
+    t.pensize(3)
+    t.forward(50)
+
+    image_differ.assert_equal(LiveSvg(t.to_svg()), expected_svg)
+
+
 def test_save_as(tmp_path):
     expected = SvgTurtle(300, 200)
     expected.forward(100)
