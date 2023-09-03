@@ -49,8 +49,6 @@ class Canvas(object):
         height_text = f'{height}px'
         drawing = Drawing(size=(width_text, height_text))
 
-        clip_path = drawing.defs.add(drawing.clipPath(id='border_clip'))
-        clip_path.add(drawing.rect(size=(width, height)))
         bgcolor = self.options.get('bg')
         if bgcolor:
             drawing.add(drawing.rect(fill=bgcolor, size=('100%', '100%')))
