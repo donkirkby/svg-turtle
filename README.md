@@ -1,4 +1,6 @@
-# SaVaGe Turtle [![Build Badge]][build] [![Coverage Badge]][codecov] [![Downloads Badge]][downloads] [![PyPI Badge]][pypi]
+# SaVaGe Turtle [![Build Badge]][build] [![Coverage Badge]][codecov] [![Downloads Badge]][downloads] [![PyPI Badge]][pypi] [![Supported Python versions]][pypi]
+[Supported Python versions]: https://img.shields.io/pypi/pyversions/svg-turtle.svg
+
 ### Use the Python turtle to write SVG files
 
 [Build Badge]: https://github.com/donkirkby/svg-turtle/actions/workflows/build.yml/badge.svg?branch=main
