@@ -26,7 +26,6 @@ setuptools.setup(
     classifiers=[  # from https://pypi.org/classifiers/
         "Intended Audience :: Developers",
         "Topic :: Multimedia :: Graphics",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
