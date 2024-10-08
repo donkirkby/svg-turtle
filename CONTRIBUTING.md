@@ -48,7 +48,7 @@ are:
         deactivate
         tox -re py39
 
-9. Commit the version number changes, push, and create a release on GitHub.
+8. Commit the version number changes, push, and create a release on GitHub.
 
 [packaging.python.org]: https://packaging.python.org/tutorials/packaging-projects/
 [package page]: https://pypi.org/project/svg_turtle/
