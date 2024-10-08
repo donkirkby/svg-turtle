@@ -37,8 +37,8 @@ class Canvas(object):
     def call(self, method_name, *args, **kwargs):
         if method_name == 'create_polygon':
             args = args[0]
-        item = CanvasItem(method_name, args, kwargs)
         item_id = len(self.items)
+        item = CanvasItem(method_name, args, kwargs, z_order=item_id)
         self.items.append(item)
         return item_id
 
@@ -178,9 +178,9 @@ class Canvas(object):
         pass
 
     def tag_raise(self, item):
-        item_details = self.items[item]
-        self.max_zorder += 1
-        item_details.z_order = self.max_zorder
+        if item + 1 < len(self.items):
+            self.items[item].z_order, self.items[item+1].z_order = (
+                self.items[item+1].z_order, self.items[item].z_order)
 
     def bbox(self, item):
         item_details = self.items[item]
