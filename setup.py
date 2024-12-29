@@ -23,6 +23,9 @@ setuptools.setup(
     url=about['__url__'],
     packages=setuptools.find_packages(),
     install_requires=['svgwrite'],
+    extras_require={
+        "jupyturtle": [ 'ipython' ]
+    },
     classifiers=[  # from https://pypi.org/classifiers/
         "Intended Audience :: Developers",
         "Topic :: Multimedia :: Graphics",
