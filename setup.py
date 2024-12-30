@@ -24,7 +24,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=['svgwrite'],
     extras_require={
-        "jupyturtle": [ 'ipython' ]
+        "IPythonTurtle": [ 'ipython' ]
     },
     classifiers=[  # from https://pypi.org/classifiers/
         "Intended Audience :: Developers",

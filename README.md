@@ -40,14 +40,14 @@ file. Then give it some turtle commands, and save the file.
     t.dot(10)
     t.save_as('example.svg')
 
-## JupyTurtle: IPython integration
+## IPythonTurtle
 To use SvgTurtle with IPython integration, create an instance of the
-`JupyTurtle` class. It exposes the same interface as `SvgTurtle`. It implements
+`IPythonTurtle` class. It exposes the same interface as `SvgTurtle`. It implements
 both display on implicit return, and explicit display via the `show()` method.
 
-    from svg_turtle import JupyTurtle
+    from svg_turtle import IPythonTurtle
     
-    t = JupyTurtle(500, 500)
+    t = IPythonTurtle(500, 500)
     t.forward(200)
     t.show()                    # explicit display
     t.dot(10)

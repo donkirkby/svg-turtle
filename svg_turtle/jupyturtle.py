@@ -1,13 +1,13 @@
 from importlib import import_module
 from .svg_turtle import SvgTurtle
 
-class JupyTurtle(SvgTurtle):
+class IPythonTurtle(SvgTurtle):
   ipy_disp = None
 
   def __init__(self, *args):
-    if JupyTurtle.ipy_disp is None:
+    if IPythonTurtle.ipy_disp is None:
       try:
-        JupyTurtle.ipy_disp = import_module('IPython.display')
+        IPythonTurtle.ipy_disp = import_module('IPython.display')
       except ImportError as err:
         raise ImportError("Could not import required dependency IPython.display") from err
     super().__init__(*args)
@@ -16,4 +16,4 @@ class JupyTurtle(SvgTurtle):
     return self.to_svg()
   
   def show(self):
-    JupyTurtle.ipy_disp.display(JupyTurtle.ipy_disp.SVG(self.to_svg()))
+    IPythonTurtle.ipy_disp.display(IPythonTurtle.ipy_disp.SVG(self.to_svg()))
