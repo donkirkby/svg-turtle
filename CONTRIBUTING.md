@@ -19,18 +19,18 @@ pip can find it. The details are at [packaging.python.org], but the main steps
 are:
 
 1. Update the version number in `svg_turtle/about.py` and development status
-   in `setup.py`.
+   in `pyproject.toml`.
 2. Activate the project's Python virtual environment.
 
         . .tox/py39/bin/activate
 
 3. Temporarily install the build tools using pip.
 
-        python -m pip install --upgrade setuptools wheel twine
+        python -m pip install --upgrade build twine
 
 4. Build the release files.
 
-        python setup.py sdist bdist_wheel
+        python -m build
 
 5. Upload the release to PyPI. You'll need a user name and password.
 
