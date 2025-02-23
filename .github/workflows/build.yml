@@ -32,6 +32,7 @@ jobs:
           allow-prereleases: true
       - name: Install dependencies
         run: |
+          sudo apt-get install -y libcairo2-dev pkg-config python3-dev
           python -m pip install --upgrade pip tox
       - name: Test with pytest
         run: |
