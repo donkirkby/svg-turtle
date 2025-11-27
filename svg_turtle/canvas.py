@@ -43,11 +43,7 @@ class Canvas(object):
         return item_id
 
     def to_drawing(self):
-        width = self.winfo_width()
-        height = self.winfo_height()
-        width_text = f'{width}px'
-        height_text = f'{height}px'
-        drawing = Drawing(size=(width_text, height_text))
+        drawing = Drawing(size=(self.winfo_width(), self.winfo_height()))
 
         bgcolor = self.options.get('bg')
         if bgcolor:

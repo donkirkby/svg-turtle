@@ -28,7 +28,12 @@ class SvgTurtle(RawTurtle):
             self._config = {'bgcolor': None}
 
         def _blankimage(self):
-            pass
+            if hasattr(tk, 'PhotoImage'):
+                # Tkinter is installed, created a blank image.
+                return super()._blankimage()
+
+            # Tkinter is stubbed out, no image needed.
+            return None
 
         def clear(self):
             # This breaks the monkey patch if you don't put the pen back.
