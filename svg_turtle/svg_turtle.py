@@ -20,6 +20,9 @@ from turtle import RawTurtle, TurtleScreen, Turtle, TurtleGraphicsError
 
 DEFAULT_FONT = ("Arial", 8, "normal")
 
+if not hasattr(tk, 'PhotoImage'):
+    tk.PhotoImage = object
+
 
 class SvgTurtle(RawTurtle):
     class _Screen(TurtleScreen):
@@ -28,8 +31,8 @@ class SvgTurtle(RawTurtle):
             self._config = {'bgcolor': None}
 
         def _blankimage(self):
-            if hasattr(tk, 'PhotoImage'):
-                # Tkinter is installed, created a blank image.
+            if getattr(tk, 'PhotoImage', object) is not object:
+                # Tkinter is installed, create a blank image.
                 return super()._blankimage()
 
             # Tkinter is stubbed out, no image needed.
