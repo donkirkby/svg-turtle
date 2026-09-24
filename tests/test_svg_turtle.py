@@ -8,8 +8,11 @@ from svgwrite import Drawing
 from svglib.svglib import svg2rlg
 from reportlab.graphics import renderPM
 
+import sys
+
 # Importing TurtleGraphicsError directly from turtle will fail without tkinter.
 from svg_turtle import SvgTurtle, TurtleGraphicsError
+from svg_turtle.canvas import Canvas
 
 
 class LiveSvg(LiveImage):
@@ -327,3 +330,24 @@ def test_exits():
     t.getscreen().done()
     t.getscreen().bye()
     t.getscreen().exitonclick()
+
+
+def test_canvas_winfo_toplevel():
+    """ Verify Canvas implements winfo_toplevel for macOS window raising in Python 3.14. """
+    canvas = Canvas(200, 200)
+    assert hasattr(canvas, 'winfo_toplevel')
+    top = canvas.winfo_toplevel()
+    assert hasattr(top, 'wm_attributes')
+    # Must not raise an exception when called with arguments
+    top.wm_attributes(topmost=True)
+    top.wm_attributes(topmost=False)
+
+
+def test_macos_python314_init(monkeypatch):
+    """ Verify SvgTurtle can initialize when simulating macOS platform. """
+    monkeypatch.setattr(sys, 'platform', 'darwin')
+    turtle = SvgTurtle(200, 200)
+    assert turtle is not None
+    turtle.forward(50)
+    svg = turtle.to_svg()
+    assert len(svg) > 0
