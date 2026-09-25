@@ -13,6 +13,9 @@ class DummyWindow:
     def call(self, *args, **kwargs):
         pass
 
+    def wm_attributes(self, *args, **kwargs):
+        pass
+
 
 class Canvas(object):
     def __init__(self, width=400, height=250):
